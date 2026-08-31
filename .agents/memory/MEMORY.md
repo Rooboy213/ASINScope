@@ -1,0 +1,1 @@
+- [Demo auth seeding](demo-auth-seeding.md) — seed demo passwords with the same salted hash used by login verification.

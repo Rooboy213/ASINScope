@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "NumVerify — Amazon Growth Agency"
+version = "1.0.0"
+id = "artifacts/numverify"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18592
+
+[services.development]
+run = "pnpm --filter @workspace/numverify run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/numverify", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/numverify/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18592"
+BASE_PATH = "/"
