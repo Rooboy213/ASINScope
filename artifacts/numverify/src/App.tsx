@@ -12,6 +12,7 @@ import { AdminLayout } from '@/components/layout/admin-layout';
 
 // Public Pages
 import HomePage from '@/pages/public/home';
+import RankTrackerPage from '@/pages/public/rank-tracker';
 import ServicesPage from '@/pages/public/services';
 import PricingPage from '@/pages/public/pricing';
 import CaseStudiesPage from '@/pages/public/case-studies';
@@ -109,6 +110,7 @@ function Router() {
         <PublicLayout>
           <Switch>
             <Route path="/" component={HomePage} />
+            <Route path="/rank-tracker" component={RankTrackerPage} />
             <Route path="/services" component={ServicesPage} />
             <Route path="/pricing" component={PricingPage} />
             <Route path="/case-studies" component={CaseStudiesPage} />
@@ -129,7 +131,7 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="dark" storageKey="numverify-theme">
+      <ThemeProvider defaultTheme="light" storageKey="numverify-theme">
         <TooltipProvider>
           <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
             <Router />

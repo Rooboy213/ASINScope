@@ -24,6 +24,7 @@ export function PublicNavbar() {
 
   const navLinks = [
     { label: "Services", href: "/services" },
+    { label: "Rank Tracker", href: "/rank-tracker" },
     { label: "Case Studies", href: "/case-studies" },
     { label: "Pricing", href: "/pricing" },
     { label: "How it Works", href: "/how-it-works" },
@@ -62,6 +63,7 @@ export function PublicNavbar() {
                   ? "text-primary"
                   : "text-muted-foreground"
               )}
+              data-testid={`link-nav-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
             >
               {link.label}
             </Link>
@@ -128,6 +130,7 @@ export function PublicNavbar() {
                   ? "bg-primary/10 text-primary"
                   : "text-muted-foreground"
               )}
+              data-testid={`link-mobile-nav-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
               onClick={() => setMobileMenuOpen(false)}
             >
               {link.label}

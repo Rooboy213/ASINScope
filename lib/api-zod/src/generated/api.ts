@@ -523,6 +523,38 @@ export const GetSiteStatsResponse = zod.object({
 
 
 /**
+ * @summary Look up an Amazon product keyword ranking
+ */
+export const LookupRankTrackerBody = zod.object({
+  "asin": zod.string().describe('Amazon Standard Identification Number'),
+  "keyword": zod.string(),
+  "marketplace": zod.enum(['US', 'CA', 'UK', 'DE', 'FR', 'IT', 'ES', 'JP', 'AU', 'IN'])
+})
+
+export const LookupRankTrackerResponse = zod.object({
+  "mode": zod.enum(['demo', 'live']),
+  "asin": zod.string(),
+  "keyword": zod.string(),
+  "marketplace": zod.string(),
+  "productTitle": zod.string(),
+  "brand": zod.string(),
+  "imageUrl": zod.string().nullish(),
+  "currentRank": zod.number(),
+  "previousRank": zod.number(),
+  "rankChange": zod.number(),
+  "rating": zod.number(),
+  "reviewCount": zod.number(),
+  "price": zod.number(),
+  "currency": zod.string(),
+  "trackedAt": zod.string(),
+  "trend": zod.array(zod.object({
+  "date": zod.string(),
+  "rank": zod.number()
+}))
+})
+
+
+/**
  * @summary Get client dashboard summary
  */
 export const GetDashboardStatsResponse = zod.object({

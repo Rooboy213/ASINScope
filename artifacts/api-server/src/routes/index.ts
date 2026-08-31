@@ -9,6 +9,7 @@ import caseStudiesRouter from "./case_studies";
 import pricingRouter from "./pricing";
 import contactRouter from "./contact";
 import statsRouter from "./stats";
+import rankTrackerRouter from "./rank_tracker";
 import dashboardRouter from "./dashboard";
 
 const router: IRouter = Router();
@@ -23,6 +24,7 @@ router.use(caseStudiesRouter);
 router.use(pricingRouter);
 router.use(contactRouter);
 router.use(statsRouter);
+router.use(rankTrackerRouter);
 router.use(dashboardRouter);
 
 export default router;

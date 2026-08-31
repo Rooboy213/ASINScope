@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { db, projectsTable, ordersTable, invoicesTable, ticketsTable, messagesTable, reportsTable, usersTable, newsletterSubscribersTable } from "@workspace/db";
+import { db, projectsTable, ordersTable, invoicesTable, ticketsTable, messagesTable, reportsTable, usersTable, newsletterSubscribersTable, contactSubmissionsTable } from "@workspace/db";
 import { eq, and, inArray } from "drizzle-orm";
 import {
   CreateTicketBody,

@@ -256,6 +256,62 @@ export interface SiteStats {
   expertSpecialists: number;
 }
 
+export type RankTrackerInputMarketplace = typeof RankTrackerInputMarketplace[keyof typeof RankTrackerInputMarketplace];
+
+
+export const RankTrackerInputMarketplace = {
+  US: 'US',
+  CA: 'CA',
+  UK: 'UK',
+  DE: 'DE',
+  FR: 'FR',
+  IT: 'IT',
+  ES: 'ES',
+  JP: 'JP',
+  AU: 'AU',
+  IN: 'IN',
+} as const;
+
+export interface RankTrackerInput {
+  /** Amazon Standard Identification Number */
+  asin: string;
+  keyword: string;
+  marketplace: RankTrackerInputMarketplace;
+}
+
+export interface RankPoint {
+  date: string;
+  rank: number;
+}
+
+export type RankTrackerResultMode = typeof RankTrackerResultMode[keyof typeof RankTrackerResultMode];
+
+
+export const RankTrackerResultMode = {
+  demo: 'demo',
+  live: 'live',
+} as const;
+
+export interface RankTrackerResult {
+  mode: RankTrackerResultMode;
+  asin: string;
+  keyword: string;
+  marketplace: string;
+  productTitle: string;
+  brand: string;
+  /** @nullable */
+  imageUrl?: string | null;
+  currentRank: number;
+  previousRank: number;
+  rankChange: number;
+  rating: number;
+  reviewCount: number;
+  price: number;
+  currency: string;
+  trackedAt: string;
+  trend: RankPoint[];
+}
+
 export interface DashboardStats {
   activeProjects: number;
   pendingOrders: number;

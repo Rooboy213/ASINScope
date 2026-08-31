@@ -47,6 +47,8 @@ import type {
   OrderStatusUpdate,
   PricingPlan,
   Project,
+  RankTrackerInput,
+  RankTrackerResult,
   RegisterInput,
   Report,
   ReportInput,
@@ -2090,6 +2092,77 @@ export function useGetSiteStats<TData = Awaited<ReturnType<typeof getSiteStats>>
 
 
 
+
+export const getLookupRankTrackerUrl = () => {
+
+
+
+
+  return `/api/rank-tracker/lookup`
+}
+
+/**
+ * @summary Look up an Amazon product keyword ranking
+ */
+export const lookupRankTracker = async (rankTrackerInput: RankTrackerInput, options?: RequestInit): Promise<RankTrackerResult> => {
+
+  return customFetch<RankTrackerResult>(getLookupRankTrackerUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(rankTrackerInput)
+  }
+);}
+
+
+
+
+
+export const getLookupRankTrackerMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lookupRankTracker>>, TError,{data: BodyType<RankTrackerInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof lookupRankTracker>>, TError,{data: BodyType<RankTrackerInput>}, TContext> => {
+
+const mutationKey = ['lookupRankTracker'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lookupRankTracker>>, {data: BodyType<RankTrackerInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  lookupRankTracker(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type LookupRankTrackerMutationResult = NonNullable<Awaited<ReturnType<typeof lookupRankTracker>>>
+    export type LookupRankTrackerMutationBody = BodyType<RankTrackerInput>
+    export type LookupRankTrackerMutationError = ErrorType<void>
+
+    /**
+ * @summary Look up an Amazon product keyword ranking
+ */
+export const useLookupRankTracker = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lookupRankTracker>>, TError,{data: BodyType<RankTrackerInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof lookupRankTracker>>,
+        TError,
+        {data: BodyType<RankTrackerInput>},
+        TContext
+      > => {
+      return useMutation(getLookupRankTrackerMutationOptions(options));
+    }
 
 export const getGetDashboardStatsUrl = () => {
 

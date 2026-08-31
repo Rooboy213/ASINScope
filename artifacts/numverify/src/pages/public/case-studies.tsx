@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useListCaseStudies } from "@workspace/api-client-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowUpRight, ArrowRight, TrendingUp } from "lucide-react";
+import { ArrowUpRight, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function CaseStudiesPage() {
@@ -56,7 +56,7 @@ export default function CaseStudiesPage() {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
               {caseStudies?.map((study, i) => (
                 <motion.div
                   key={study.id}
@@ -75,13 +75,20 @@ export default function CaseStudiesPage() {
                         </span>
                       </div>
                       <CardTitle className="text-2xl font-display">{study.title}</CardTitle>
-                      <CardDescription className="text-base mt-2 line-clamp-2">
-                        {study.challenge}
-                      </CardDescription>
+                      <CardDescription className="text-base mt-2">{study.challenge}</CardDescription>
                     </CardHeader>
                     <CardContent className="flex-1">
-                      <div className="grid grid-cols-2 gap-4 mt-2">
-                        {study.metrics.slice(0, 2).map((metric, j) => (
+                      <div className="space-y-5">
+                        <div className="rounded-lg border border-primary/15 bg-primary/5 p-4">
+                          <p className="text-xs font-semibold uppercase tracking-wider text-primary mb-2">What we changed</p>
+                          <p className="text-sm leading-relaxed text-muted-foreground">{study.solution}</p>
+                        </div>
+                        <div className="rounded-lg border border-accent/15 bg-accent/5 p-4">
+                          <p className="text-xs font-semibold uppercase tracking-wider text-accent mb-2">What happened</p>
+                          <p className="text-sm leading-relaxed text-muted-foreground">{study.results}</p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 mt-2">
+                        {study.metrics.map((metric, j) => (
                           <div key={j} className="bg-muted/50 rounded-lg p-4 flex flex-col justify-center border border-border/50">
                             <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">{metric.label}</span>
                             <div className="flex items-end gap-2">
@@ -93,6 +100,7 @@ export default function CaseStudiesPage() {
                             </div>
                           </div>
                         ))}
+                        </div>
                       </div>
                     </CardContent>
                     <CardFooter className="pt-4 border-t bg-muted/10">
@@ -108,6 +116,9 @@ export default function CaseStudiesPage() {
               ))}
             </div>
           )}
+          <p className="mx-auto mt-10 max-w-3xl text-center text-xs leading-relaxed text-muted-foreground">
+            Client names and product details may be anonymized or simplified to protect confidentiality. Results vary by category, offer, inventory, and marketplace conditions; every engagement begins with a baseline and a documented measurement plan.
+          </p>
         </div>
       </section>
     </div>

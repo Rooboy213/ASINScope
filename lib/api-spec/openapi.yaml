@@ -28,6 +28,8 @@ tags:
     description: Contact form
   - name: newsletter
     description: Newsletter subscriptions
+  - name: rankTracker
+    description: Amazon product keyword rank tracking
   - name: dashboard
     description: Client dashboard
   - name: admin
@@ -531,6 +533,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SiteStats"
+
+  # ─── Amazon Rank Tracker ──────────────────────────────────────────
+  /rank-tracker/lookup:
+    post:
+      operationId: lookupRankTracker
+      tags: [rankTracker]
+      summary: Look up an Amazon product keyword ranking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RankTrackerInput"
+      responses:
+        "200":
+          description: Rank tracker result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RankTrackerResult"
+        "400":
+          description: Validation error
+        "502":
+          description: Rank provider unavailable
 
   # ─── Client Dashboard ─────────────────────────────────────────────
   /dashboard/stats:
@@ -1267,6 +1293,68 @@ components:
         expertSpecialists:
           type: integer
       required: [productsSupported, brandsServed, satisfactionRate, revenueInfluencedMillions, yearsExperience, expertSpecialists]
+
+    RankTrackerInput:
+      type: object
+      properties:
+        asin:
+          type: string
+          description: Amazon Standard Identification Number
+        keyword:
+          type: string
+        marketplace:
+          type: string
+          enum: [US, CA, UK, DE, FR, IT, ES, JP, AU, IN]
+      required: [asin, keyword, marketplace]
+
+    RankPoint:
+      type: object
+      properties:
+        date:
+          type: string
+        rank:
+          type: integer
+      required: [date, rank]
+
+    RankTrackerResult:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [demo, live]
+        asin:
+          type: string
+        keyword:
+          type: string
+        marketplace:
+          type: string
+        productTitle:
+          type: string
+        brand:
+          type: string
+        imageUrl:
+          type: ["string", "null"]
+        currentRank:
+          type: integer
+        previousRank:
+          type: integer
+        rankChange:
+          type: integer
+        rating:
+          type: number
+        reviewCount:
+          type: integer
+        price:
+          type: number
+        currency:
+          type: string
+        trackedAt:
+          type: string
+        trend:
+          type: array
+          items:
+            $ref: "#/components/schemas/RankPoint"
+      required: [mode, asin, keyword, marketplace, productTitle, brand, currentRank, previousRank, rankChange, rating, reviewCount, price, currency, trackedAt, trend]
 
     # ── Dashboard ─────────────────────────────────────────────────
     DashboardStats:

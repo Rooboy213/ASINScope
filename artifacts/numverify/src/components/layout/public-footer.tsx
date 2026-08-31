@@ -23,6 +23,7 @@ export function PublicFooter() {
             <h4 className="font-semibold mb-4">Services</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link href="/services" className="hover:text-primary transition-colors">Amazon SEO & Ranking</Link></li>
+              <li><Link href="/rank-tracker" className="hover:text-primary transition-colors">Amazon Rank Tracker</Link></li>
               <li><Link href="/services" className="hover:text-primary transition-colors">PPC Management</Link></li>
               <li><Link href="/services" className="hover:text-primary transition-colors">Listing Optimization</Link></li>
               <li><Link href="/services" className="hover:text-primary transition-colors">Brand Protection</Link></li>

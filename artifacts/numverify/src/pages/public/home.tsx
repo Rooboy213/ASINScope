@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowRight, BarChart3, CheckCircle2, ChevronRight, Globe, Lock, Search, TrendingUp, Users } from "lucide-react";
+import { ArrowRight, BarChart3, CheckCircle2, ChevronRight, Quote, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,7 +36,7 @@ export default function HomePage() {
               transition={{ duration: 0.5 }}
             >
               <Badge variant="outline" className="mb-6 border-primary/50 text-primary bg-primary/10 px-4 py-1.5 rounded-full">
-                #1 Amazon Growth Agency
+                Amazon growth for operators
               </Badge>
             </motion.div>
             
@@ -46,9 +46,9 @@ export default function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              Dominate Amazon.<br />
+                Know what moves the needle.<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-                Scale Exponentially.
+                  Then scale it.
               </span>
             </motion.h1>
             
@@ -58,7 +58,7 @@ export default function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              We don't just optimize listings. We engineer market dominance. Our elite team of Amazon specialists uses data-driven strategies to outrank, outperform, and out-sell your competition.
+              NumVerify gives operators a clear line from marketplace data to profitable growth — what changed, what matters, and what to do next.
             </motion.p>
             
             <motion.div 
@@ -69,7 +69,7 @@ export default function HomePage() {
             >
               <Button size="lg" className="w-full sm:w-auto h-14 px-8 text-lg rounded-full" asChild>
                 <Link href="/contact">
-                  Get Your Free Audit <ArrowRight className="ml-2 h-5 w-5" />
+                  Get a category diagnosis <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-8 text-lg rounded-full" asChild>
@@ -104,6 +104,31 @@ export default function HomePage() {
                 <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{stat.label}</p>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Strip */}
+      <section className="border-b bg-card py-10">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-sm">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Operators, not spectators</p>
+              <p className="mt-3 font-display text-xl font-semibold leading-tight">The teams we work with do not need more activity. They need better calls.</p>
+            </div>
+            <div className="grid flex-1 gap-6 sm:grid-cols-3 lg:max-w-3xl lg:pl-16">
+              {[
+                { eyebrow: "01", title: "Category-aware", copy: "Every recommendation starts with the economics of your aisle." },
+                { eyebrow: "02", title: "Evidence-led", copy: "Rank, retail readiness, and contribution margin in the same room." },
+                { eyebrow: "03", title: "Accountable", copy: "A clear owner, a clear next move, and a scorecard to prove it." },
+              ].map((item) => (
+                <div key={item.eyebrow} className="border-l border-border pl-4" data-testid={`trust-point-${item.eyebrow}`}>
+                  <span className="font-mono text-xs text-secondary">{item.eyebrow}</span>
+                  <p className="mt-2 font-display font-semibold">{item.title}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{item.copy}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -230,6 +255,85 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Operating Model */}
+      <section className="border-y bg-primary py-24 text-primary-foreground">
+        <div className="container mx-auto px-4">
+          <div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary-foreground/65">How growth gets de-risked</p>
+              <h2 className="mt-5 max-w-md font-display text-4xl font-semibold leading-[1.03] md:text-5xl">A tighter loop from signal to sale.</h2>
+              <p className="mt-6 max-w-sm text-lg leading-relaxed text-primary-foreground/75">
+                We replace channel noise with an operating cadence your team can actually run: diagnose, decide, deploy, learn.
+              </p>
+              <Button asChild variant="secondary" size="lg" className="mt-8 rounded-full px-6">
+                <Link href="/rank-tracker" data-testid="link-home-rank-tracker">See a live marketplace signal <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              </Button>
+            </div>
+            <div className="grid gap-0 border-t border-primary-foreground/20">
+              {[
+                { step: "01", title: "Diagnose the constraint", copy: "We find the bottleneck hiding behind the topline: discoverability, conversion, retail readiness, or the economics of the offer." },
+                { step: "02", title: "Choose the profitable lever", copy: "The plan is sequenced around impact and effort, so your team knows what not to do yet." },
+                { step: "03", title: "Deploy with a measurement plan", copy: "Every change has a baseline, a leading indicator, and a date when we decide whether it worked." },
+                { step: "04", title: "Compound what works", copy: "Winners become playbooks. Learnings travel across your catalog instead of disappearing in a deck." },
+              ].map((item) => (
+                <div key={item.step} className="grid gap-4 border-b border-primary-foreground/20 py-6 sm:grid-cols-[72px_180px_1fr] sm:items-start">
+                  <span className="font-mono text-xs text-secondary">{item.step}</span>
+                  <p className="font-display text-lg font-semibold">{item.title}</p>
+                  <p className="text-sm leading-relaxed text-primary-foreground/70">{item.copy}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Client Proof */}
+      <section className="py-24 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between mb-14">
+            <div className="max-w-2xl">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">Proof over promises</p>
+              <h2 className="mt-4 text-3xl md:text-4xl font-display font-bold">The work should show up in the numbers.</h2>
+              <p className="mt-4 text-lg text-muted-foreground">Our clients do not hire us for more dashboards. They hire us to make the next decision clearer and the result easier to defend.</p>
+            </div>
+            <Button variant="outline" className="w-fit rounded-full" asChild>
+              <Link href="/case-studies">Read the case studies <ArrowRight className="ml-2 h-4 w-4" /></Link>
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {(featuredTestimonials.length > 0 ? featuredTestimonials.slice(0, 3) : []).map((testimonial, index) => (
+              <motion.div
+                key={testimonial.id}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: index * 0.08 }}
+              >
+                <Card className="h-full border-border/60 bg-card">
+                  <CardContent className="flex h-full flex-col p-7">
+                    <Quote className="h-7 w-7 text-secondary mb-6" />
+                    <p className="text-base leading-relaxed flex-1">“{testimonial.text}”</p>
+                    <div className="mt-8 flex items-center gap-3 border-t border-border pt-5">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={testimonial.avatarUrl ?? undefined} alt={testimonial.clientName} />
+                        <AvatarFallback className="bg-primary/10 text-primary">{testimonial.clientName.slice(0, 1)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-semibold">{testimonial.clientName}</p>
+                        <p className="text-xs text-muted-foreground">{testimonial.clientTitle}, {testimonial.company}</p>
+                      </div>
+                    </div>
+                    {testimonial.metrics && (
+                      <p className="mt-4 font-mono text-[10px] uppercase tracking-wider text-accent">{testimonial.metrics}</p>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4">
@@ -273,9 +377,9 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
         
         <div className="container relative z-10 mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-6">Ready to Dominate Your Category?</h2>
+          <h2 className="text-4xl md:text-5xl font-display font-bold text-primary-foreground mb-6">Know your next profitable move.</h2>
           <p className="text-primary-foreground/80 text-xl max-w-2xl mx-auto mb-10">
-            Stop leaving money on the table. Join 500+ brands that trust NumVerify to scale their Amazon presence.
+            Bring the signal, the constraint, or the stubborn plateau. We will help you turn it into a plan your team can run.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button size="lg" variant="secondary" className="h-14 px-8 text-lg font-bold rounded-full text-primary" asChild>
