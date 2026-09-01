@@ -10,6 +10,9 @@ import { logger } from "./lib/logger";
 
 const app: Express = express();
 
+// Required behind Render / reverse proxies (correct IPs + secure cookies)
+app.set("trust proxy", 1);
+
 app.use(
   pinoHttp({
     logger,
@@ -36,23 +39,23 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
 
-// Serve the Vite frontend in production (single-service Railway deploy).
+// Serve the Vite frontend in production (single service on Render).
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const candidates = [
-  // When started from monorepo root after build
   path.resolve(process.cwd(), "artifacts/numverify/dist/public"),
-  // Relative to api-server package
   path.resolve(__dirname, "../../numverify/dist/public"),
   path.resolve(__dirname, "../numverify/dist/public"),
 ];
 
-const publicDir = candidates.find((dir) => fs.existsSync(path.join(dir, "index.html")));
+const publicDir = candidates.find((dir) =>
+  fs.existsSync(path.join(dir, "index.html")),
+);
 
 if (publicDir) {
   logger.info({ publicDir }, "Serving frontend static files");
   app.use(express.static(publicDir, { index: false }));
 
-  // SPA fallback for client-side routes (exclude /api)
+  // SPA fallback (do not intercept /api)
   app.get(/^(?!\/api).*/,
     (_req, res) => {
       res.sendFile(path.join(publicDir, "index.html"));

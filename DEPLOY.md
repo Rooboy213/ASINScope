@@ -1,76 +1,53 @@
-# Deploy ASINScope on Railway
+# Deploy ASINScope on Render + Supabase
 
-This project is a pnpm monorepo:
+Single service: Express API serves the Vite React frontend.
 
-- **Frontend**: Vite + React (`artifacts/numverify`)
-- **Backend**: Express API (`artifacts/api-server`)
-- **Database**: PostgreSQL + Drizzle (`lib/db`)
+## 1. Supabase (Postgres)
 
-In production the API also serves the built frontend (single service).
+1. Create a project at https://supabase.com
+2. **Settings → Database → Connection string → URI**
+3. Copy the URI and put your database password in place of `[YOUR-PASSWORD]`
+4. Prefer **Session** mode / port **5432** if pooler causes issues with Drizzle
 
-## 1. Create a Railway project
+## 2. Render (Web Service)
 
-1. Go to [railway.app](https://railway.app) and sign in with GitHub.
-2. **New Project** → **Deploy from GitHub repo** → select `Rooboy213/ASINScope`.
-3. Railway will detect the repo. Keep the root directory as `/`.
+1. https://render.com → **New → Web Service** → GitHub repo `Rooboy213/ASINScope`
+2. Settings:
 
-## 2. Add PostgreSQL
+| Field | Value |
+|-------|--------|
+| Runtime | Node |
+| Build Command | `corepack enable && pnpm install && pnpm run build:prod` |
+| Start Command | `pnpm run start` |
+| Instance | Free |
 
-1. In the project: **+ New** → **Database** → **PostgreSQL**.
-2. After it is created, open the Postgres service → **Variables**.
-3. Copy `DATABASE_URL` (or use Railway’s variable reference).
+3. Environment variables:
 
-## 3. Configure the web service
-
-Open your **web service** (the one from the GitHub repo):
-
-### Variables (Settings → Variables)
-
-| Variable | Value |
-|----------|--------|
-| `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` (or paste the URL) |
+| Key | Value |
+|-----|--------|
+| `DATABASE_URL` | Supabase connection URI |
 | `NODE_ENV` | `production` |
-| `PORT` | Railway sets this automatically — do not hardcode |
+| `RAPIDAPI_KEY` | your RapidAPI key |
+| `SESSION_SECRET` | long random string |
+| `RAPIDAPI_HOST` | `real-time-amazon-data.p.rapidapi.com` (optional) |
 
-Optional (if you use them later):
+`PORT` is set automatically by Render — do not set it yourself.
 
-- `SESSION_SECRET` / JWT secrets
-- any third-party API keys
+4. Deploy and wait until **Live**.
 
-### Build & start (usually auto from `railway.toml`)
+## 3. Create tables
 
-- **Build**: `pnpm install --frozen-lockfile && pnpm run build:prod`
-- **Start**: `pnpm run start`
-
-If the UI overrides these, paste the same commands.
-
-## 4. Push database schema
-
-After the first successful deploy (or from a one-off command):
+In Render **Shell**:
 
 ```bash
-# From Railway shell / local with DATABASE_URL set
 pnpm run db:push
 ```
 
-Or in Railway: service → **Settings** → **Deploy** → run a one-off command:
+Or one-time Start Command: `pnpm run db:push && pnpm run start`, then switch back to `pnpm run start`.
 
-```bash
-pnpm --filter @workspace/db run push
-```
+## 4. Check
 
-## 5. Generate a public domain
+- Site: `https://your-service.onrender.com`
+- Health: `https://your-service.onrender.com/api/health`
 
-Service → **Settings** → **Networking** → **Generate Domain**.
-
-Your app will be at something like `https://asinscope-production.up.railway.app`.
-
-- Frontend: `/`
-- API: `/api/...`
-- Health: `/api/health`
-
-## Notes
-
-- Free/trial Railway usage is limited by credits; the service stays up (no sleep like Render free).
-- The frontend calls `/api` on the same origin, so no `VITE_API_URL` is required for this single-service setup.
-- If build fails on lockfile, try `pnpm install` without `--frozen-lockfile` once, commit the updated lockfile, and redeploy.
+Free web services sleep after idle; first request may take 30–60s.
