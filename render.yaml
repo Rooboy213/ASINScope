@@ -3,8 +3,8 @@ services:
     name: asinscope
     runtime: node
     plan: free
-    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm run build:prod
-    startCommand: pnpm run start
+    buildCommand: npx pnpm@9.15.0 install && npx pnpm@9.15.0 run build:prod
+    startCommand: npx pnpm@9.15.0 run start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV

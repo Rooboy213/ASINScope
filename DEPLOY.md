@@ -11,15 +11,17 @@ Single service: Express API serves the Vite React frontend.
 
 ## 2. Render (Web Service)
 
-1. https://render.com → **New → Web Service** → GitHub repo `Rooboy213/ASINScope`
+1. https://render.com → **New → Web Service** → GitHub repo with this code
 2. Settings:
 
 | Field | Value |
 |-------|--------|
 | Runtime | Node |
-| Build Command | `corepack enable && pnpm install && pnpm run build:prod` |
-| Start Command | `pnpm run start` |
+| Build Command | `npx pnpm@9.15.0 install && npx pnpm@9.15.0 run build:prod` |
+| Start Command | `npx pnpm@9.15.0 run start` |
 | Instance | Free |
+
+**Do not use** `corepack enable` on Render (read-only FS → build fails).
 
 3. Environment variables:
 
@@ -40,10 +42,8 @@ Single service: Express API serves the Vite React frontend.
 In Render **Shell**:
 
 ```bash
-pnpm run db:push
+npx pnpm@9.15.0 run db:push
 ```
-
-Or one-time Start Command: `pnpm run db:push && pnpm run start`, then switch back to `pnpm run start`.
 
 ## 4. Check
 
