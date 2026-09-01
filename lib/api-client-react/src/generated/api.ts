@@ -2102,7 +2102,7 @@ export const getLookupRankTrackerUrl = () => {
 }
 
 /**
- * @summary Look up an Amazon product keyword ranking
+ * @summary Look up Amazon product intelligence for an ASIN
  */
 export const lookupRankTracker = async (rankTrackerInput: RankTrackerInput, options?: RequestInit): Promise<RankTrackerResult> => {
 
@@ -2151,7 +2151,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type LookupRankTrackerMutationError = ErrorType<void>
 
     /**
- * @summary Look up an Amazon product keyword ranking
+ * @summary Look up Amazon product intelligence for an ASIN
  */
 export const useLookupRankTracker = <TError = ErrorType<void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lookupRankTracker>>, TError,{data: BodyType<RankTrackerInput>}, TContext>, request?: SecondParameter<typeof customFetch>}

@@ -523,11 +523,11 @@ export const GetSiteStatsResponse = zod.object({
 
 
 /**
- * @summary Look up an Amazon product keyword ranking
+ * @summary Look up Amazon product intelligence for an ASIN
  */
 export const LookupRankTrackerBody = zod.object({
   "asin": zod.string().describe('Amazon Standard Identification Number'),
-  "keyword": zod.string(),
+  "keyword": zod.string().optional().describe('Optional search term context for rank tracking'),
   "marketplace": zod.enum(['US', 'CA', 'UK', 'DE', 'FR', 'IT', 'ES', 'JP', 'AU', 'IN'])
 })
 
@@ -550,7 +550,12 @@ export const LookupRankTrackerResponse = zod.object({
   "trend": zod.array(zod.object({
   "date": zod.string(),
   "rank": zod.number()
-}))
+})),
+  "productDetails": zod.record(zod.string(), zod.unknown()).nullable(),
+  "offers": zod.record(zod.string(), zod.unknown()).nullable(),
+  "reviews": zod.record(zod.string(), zod.unknown()).nullable(),
+  "topReviews": zod.record(zod.string(), zod.unknown()).nullable(),
+  "endpointErrors": zod.record(zod.string(), zod.string())
 })
 
 

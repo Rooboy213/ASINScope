@@ -10,6 +10,7 @@ import type { RankTrackerInputMarketplace } from './rankTrackerInputMarketplace'
 export interface RankTrackerInput {
   /** Amazon Standard Identification Number */
   asin: string;
-  keyword: string;
+  /** Optional search term context for rank tracking */
+  keyword?: string;
   marketplace: RankTrackerInputMarketplace;
 }

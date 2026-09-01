@@ -80,6 +80,8 @@
 
   --background: 42 29% 94%;
   --foreground: 222 35% 14%;
+  --surface-strong: 222 35% 14%;
+  --surface-warm: 39 36% 91%;
   
   --border: 39 18% 82%;
   
@@ -161,6 +163,8 @@
 
   --background: 222 35% 11%; 
   --foreground: 42 33% 96%;
+  --surface-strong: 42 33% 96%;
+  --surface-warm: 222 30% 18%;
 
   --border: 222 22% 23%;
 

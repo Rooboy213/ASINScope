@@ -539,7 +539,7 @@ paths:
     post:
       operationId: lookupRankTracker
       tags: [rankTracker]
-      summary: Look up an Amazon product keyword ranking
+      summary: Look up Amazon product intelligence for an ASIN
       requestBody:
         required: true
         content:
@@ -548,7 +548,7 @@ paths:
               $ref: "#/components/schemas/RankTrackerInput"
       responses:
         "200":
-          description: Rank tracker result
+          description: Amazon product intelligence result
           content:
             application/json:
               schema:
@@ -1302,10 +1302,11 @@ components:
           description: Amazon Standard Identification Number
         keyword:
           type: string
+          description: Optional search term context for rank tracking
         marketplace:
           type: string
           enum: [US, CA, UK, DE, FR, IT, ES, JP, AU, IN]
-      required: [asin, keyword, marketplace]
+      required: [asin, marketplace]
 
     RankPoint:
       type: object
@@ -1354,7 +1355,23 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/RankPoint"
-      required: [mode, asin, keyword, marketplace, productTitle, brand, currentRank, previousRank, rankChange, rating, reviewCount, price, currency, trackedAt, trend]
+        productDetails:
+          type: ["object", "null"]
+          additionalProperties: true
+        offers:
+          type: ["object", "null"]
+          additionalProperties: true
+        reviews:
+          type: ["object", "null"]
+          additionalProperties: true
+        topReviews:
+          type: ["object", "null"]
+          additionalProperties: true
+        endpointErrors:
+          type: object
+          additionalProperties:
+            type: string
+      required: [mode, asin, keyword, marketplace, productTitle, brand, currentRank, previousRank, rankChange, rating, reviewCount, price, currency, trackedAt, trend, productDetails, offers, reviews, topReviews, endpointErrors]
 
     # ── Dashboard ─────────────────────────────────────────────────
     DashboardStats:

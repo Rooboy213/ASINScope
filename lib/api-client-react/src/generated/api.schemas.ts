@@ -275,7 +275,8 @@ export const RankTrackerInputMarketplace = {
 export interface RankTrackerInput {
   /** Amazon Standard Identification Number */
   asin: string;
-  keyword: string;
+  /** Optional search term context for rank tracking */
+  keyword?: string;
   marketplace: RankTrackerInputMarketplace;
 }
 
@@ -291,6 +292,28 @@ export const RankTrackerResultMode = {
   demo: 'demo',
   live: 'live',
 } as const;
+
+/**
+ * @nullable
+ */
+export type RankTrackerResultProductDetails = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type RankTrackerResultOffers = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type RankTrackerResultReviews = { [key: string]: unknown } | null;
+
+/**
+ * @nullable
+ */
+export type RankTrackerResultTopReviews = { [key: string]: unknown } | null;
+
+export type RankTrackerResultEndpointErrors = {[key: string]: string};
 
 export interface RankTrackerResult {
   mode: RankTrackerResultMode;
@@ -313,6 +336,15 @@ export interface RankTrackerResult {
   currency: string;
   trackedAt: string;
   trend: RankPoint[];
+  /** @nullable */
+  productDetails: RankTrackerResultProductDetails;
+  /** @nullable */
+  offers: RankTrackerResultOffers;
+  /** @nullable */
+  reviews: RankTrackerResultReviews;
+  /** @nullable */
+  topReviews: RankTrackerResultTopReviews;
+  endpointErrors: RankTrackerResultEndpointErrors;
 }
 
 export interface DashboardStats {

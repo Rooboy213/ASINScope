@@ -6,7 +6,12 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { RankPoint } from './rankPoint';
+import type { RankTrackerResultEndpointErrors } from './rankTrackerResultEndpointErrors';
 import type { RankTrackerResultMode } from './rankTrackerResultMode';
+import type { RankTrackerResultOffers } from './rankTrackerResultOffers';
+import type { RankTrackerResultProductDetails } from './rankTrackerResultProductDetails';
+import type { RankTrackerResultReviews } from './rankTrackerResultReviews';
+import type { RankTrackerResultTopReviews } from './rankTrackerResultTopReviews';
 
 export interface RankTrackerResult {
   mode: RankTrackerResultMode;
@@ -29,4 +34,13 @@ export interface RankTrackerResult {
   currency: string;
   trackedAt: string;
   trend: RankPoint[];
+  /** @nullable */
+  productDetails: RankTrackerResultProductDetails;
+  /** @nullable */
+  offers: RankTrackerResultOffers;
+  /** @nullable */
+  reviews: RankTrackerResultReviews;
+  /** @nullable */
+  topReviews: RankTrackerResultTopReviews;
+  endpointErrors: RankTrackerResultEndpointErrors;
 }
