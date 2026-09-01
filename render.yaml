@@ -3,7 +3,7 @@ services:
     name: asinscope
     runtime: node
     plan: free
-    buildCommand: npx pnpm@9.15.0 install && npx pnpm@9.15.0 run build:prod
+    buildCommand: npx pnpm@9.15.0 install --no-frozen-lockfile && npx pnpm@9.15.0 run build:prod
     startCommand: npx pnpm@9.15.0 run start
     healthCheckPath: /api/health
     envVars:
