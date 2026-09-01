@@ -63,8 +63,8 @@ const marketplaces: Array<{ value: RankTrackerInputMarketplace; label: string; f
 ];
 
 const exampleForm: TrackerForm = {
-  asin: "B0C7KJ9L2M",
-  keyword: "wireless charging stand",
+  asin: "B0C7Q2L8M4",
+  keyword: "collagen peptides",
   marketplace: "US",
 };
 
@@ -85,7 +85,7 @@ function TrendLine({ result }: { result: RankTrackerResult }) {
   if (values.length < 2) {
     return (
       <div className="flex h-32 items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 text-sm text-muted-foreground" data-testid="empty-trend">
-        Not enough history to plot a trend yet.
+        {result.currentRank === null ? "This provider did not return rank history for this product." : "Not enough history to plot a trend yet."}
       </div>
     );
   }
@@ -132,9 +132,10 @@ function TrendLine({ result }: { result: RankTrackerResult }) {
 }
 
 function ResultPanel({ result }: { result: RankTrackerResult }) {
-  const movedUp = result.rankChange > 0;
-  const movement = Math.abs(result.rankChange);
-  const rankLabel = movement === 0 ? "Holding steady" : movedUp ? `${movement} positions up` : `${movement} positions down`;
+  const hasRank = result.currentRank !== null;
+  const movedUp = result.rankChange !== null && result.rankChange > 0;
+  const movement = result.rankChange === null ? null : Math.abs(result.rankChange);
+  const rankLabel = !hasRank ? "Unavailable from provider" : movement === 0 ? "Holding steady" : movedUp ? `${movement} positions up` : `${movement} positions down`;
 
   return (
     <motion.section
@@ -149,7 +150,7 @@ function ResultPanel({ result }: { result: RankTrackerResult }) {
             <BarChart3 className="h-5 w-5" />
           </div>
           <div>
-            <p className="font-display text-lg font-semibold">Organic rank snapshot</p>
+            <p className="font-display text-lg font-semibold">{hasRank ? "Organic rank snapshot" : "Amazon product snapshot"}</p>
             <p className="font-mono text-[10px] uppercase tracking-[.18em] text-muted-foreground">
               {result.marketplace} / {result.keyword}
             </p>
@@ -184,12 +185,12 @@ function ResultPanel({ result }: { result: RankTrackerResult }) {
           <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-4">
             <div className="bg-card p-4">
               <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Current rank</p>
-              <p className="mt-2 font-display text-3xl font-bold text-primary" data-testid="text-current-rank">#{result.currentRank}</p>
+              <p className="mt-2 font-display text-3xl font-bold text-primary" data-testid="text-current-rank">{result.currentRank === null ? "—" : `#${result.currentRank}`}</p>
             </div>
             <div className="bg-card p-4">
               <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Movement</p>
-              <p className={cn("mt-2 flex items-center gap-1 font-display text-lg font-bold", movedUp ? "text-accent" : "text-destructive")} data-testid="text-rank-change">
-                {movement === 0 ? <ArrowRight className="h-4 w-4" /> : movedUp ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
+              <p className={cn("mt-2 flex items-center gap-1 font-display text-lg font-bold", movement === null ? "text-muted-foreground" : movedUp ? "text-accent" : movement === 0 ? "text-foreground" : "text-destructive")} data-testid="text-rank-change">
+                {movement === null || movement === 0 ? <ArrowRight className="h-4 w-4" /> : movedUp ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
                 {rankLabel}
               </p>
             </div>
@@ -206,10 +207,10 @@ function ResultPanel({ result }: { result: RankTrackerResult }) {
           <div>
             <div className="mb-3 flex items-center justify-between">
               <div>
-                <p className="font-display font-semibold">14-day visibility</p>
-                <p className="text-xs text-muted-foreground">Lower rank is closer to the top of search.</p>
+               <p className="font-display font-semibold">{hasRank ? "14-day visibility" : "Rank history"}</p>
+                <p className="text-xs text-muted-foreground">{hasRank ? "Lower rank is closer to the top of search." : "The connected product-details endpoint did not include a rank field."}</p>
               </div>
-              <span className="font-mono text-xs text-muted-foreground">#{result.previousRank} prior</span>
+              <span className="font-mono text-xs text-muted-foreground">{result.previousRank === null ? "No prior rank" : `#${result.previousRank} prior`}</span>
             </div>
             <TrendLine result={result} />
           </div>
@@ -228,15 +229,17 @@ function ResultPanel({ result }: { result: RankTrackerResult }) {
                 <dd className="font-mono text-xs" data-testid="text-tracked-at">{formatTrackedAt(result.trackedAt)}</dd>
               </div>
               <div className="flex items-baseline justify-between gap-4">
-                <dt className="text-sm text-muted-foreground">Previous rank</dt>
-                <dd className="font-mono text-sm">#{result.previousRank}</dd>
+                 <dt className="text-sm text-muted-foreground">Previous rank</dt>
+                <dd className="font-mono text-sm">{result.previousRank === null ? "Not supplied" : `#${result.previousRank}`}</dd>
               </div>
             </dl>
           </div>
           <div className="mt-8 rounded-lg border border-secondary/30 bg-secondary/10 p-4">
             <p className="font-display text-sm font-semibold">What this says</p>
             <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-              {movedUp
+              {!hasRank
+                ? "Live product details are available. This RapidAPI endpoint did not return a rank field for this ASIN, so NumVerify is not estimating one."
+                : movedUp
                 ? "Your listing is gaining visibility for this term. Protect the position before competitors close the gap."
                 : movement === 0
                   ? "Your listing is stable. Look for conversion and review velocity gains to create the next lift."
@@ -380,7 +383,7 @@ export default function RankTrackerPage() {
                 </form>
               </Form>
               <div className="mt-5 flex flex-col gap-3 border-t border-border pt-4 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-                <p className="flex items-center gap-2"><Globe2 className="h-3.5 w-3.5 text-primary" /> Checking {selectedMarket.flag} marketplace signals</p>
+                  <p className="flex items-center gap-2"><Globe2 className="h-3.5 w-3.5 text-primary" /> Checking {selectedMarket.flag} marketplace signals</p>
                 <button type="button" onClick={loadExample} className="flex items-center gap-1.5 font-medium text-primary transition-colors hover:text-foreground" data-testid="button-load-example">
                   Try an example query <ArrowRight className="h-3.5 w-3.5" />
                 </button>

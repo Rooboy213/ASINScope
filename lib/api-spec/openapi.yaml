@@ -1335,11 +1335,11 @@ components:
         imageUrl:
           type: ["string", "null"]
         currentRank:
-          type: integer
+          type: ["integer", "null"]
         previousRank:
-          type: integer
+          type: ["integer", "null"]
         rankChange:
-          type: integer
+          type: ["integer", "null"]
         rating:
           type: number
         reviewCount:

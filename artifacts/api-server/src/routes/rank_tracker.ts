@@ -58,7 +58,17 @@ function makeTrend(currentRank: number, previousRank: number) {
   });
 }
 
-function resultFromProduct(input: { asin: string; keyword: string; marketplace: string }, product: typeof demoCatalog[string], mode: "demo" | "live") {
+function resultFromProduct(
+  input: { asin: string; keyword: string; marketplace: string },
+  product: Omit<typeof demoCatalog[string], "currentRank" | "previousRank"> & {
+    currentRank: number | null;
+    previousRank: number | null;
+  },
+  mode: "demo" | "live",
+) {
+  const currentRank = product.currentRank;
+  const previousRank = product.previousRank;
+  const hasRankHistory = currentRank !== null && previousRank !== null;
   return {
     mode,
     asin: input.asin,
@@ -67,15 +77,15 @@ function resultFromProduct(input: { asin: string; keyword: string; marketplace: 
     productTitle: product.productTitle,
     brand: product.brand,
     imageUrl: product.imageUrl,
-    currentRank: product.currentRank,
-    previousRank: product.previousRank,
-    rankChange: product.previousRank - product.currentRank,
+    currentRank,
+    previousRank,
+    rankChange: hasRankHistory ? previousRank - currentRank : null,
     rating: product.rating,
     reviewCount: product.reviewCount,
     price: product.price,
     currency: input.marketplace === "UK" ? "GBP" : input.marketplace === "DE" || input.marketplace === "FR" || input.marketplace === "IT" || input.marketplace === "ES" ? "EUR" : "USD",
     trackedAt: new Date().toISOString(),
-    trend: makeTrend(product.currentRank, product.previousRank),
+    trend: hasRankHistory ? makeTrend(currentRank, previousRank) : [],
   };
 }
 
@@ -96,12 +106,13 @@ router.post("/rank-tracker/lookup", async (req, res): Promise<void> => {
   const rapidApiKey = process.env.RAPIDAPI_KEY;
   const rapidApiHost = process.env.RAPIDAPI_HOST;
 
-  if (rapidApiUrl && rapidApiKey && rapidApiHost) {
+  const isKnownDemoProduct = Boolean(demoCatalog[input.asin]);
+  if (rapidApiUrl && rapidApiKey && rapidApiHost && !isKnownDemoProduct) {
     try {
       const target = new URL(rapidApiUrl);
       target.searchParams.set("asin", input.asin);
       target.searchParams.set("keyword", input.keyword);
-      target.searchParams.set("marketplace", input.marketplace);
+      target.searchParams.set("country", input.marketplace);
       const providerResponse = await fetch(target, {
         headers: {
           "X-RapidAPI-Key": rapidApiKey,
@@ -113,34 +124,57 @@ router.post("/rank-tracker/lookup", async (req, res): Promise<void> => {
         res.status(502).json({ error: "The live Amazon rank provider is temporarily unavailable." });
         return;
       }
-      const providerData = await providerResponse.json() as Partial<typeof demoCatalog> & {
-        productTitle?: string;
-        title?: string;
-        brand?: string;
-        currentRank?: number;
-        rank?: number;
-        previousRank?: number;
-        rating?: number;
-        reviewCount?: number;
-        price?: number;
-        imageUrl?: string;
-        image?: string;
+      const providerPayload = await providerResponse.json() as Record<string, unknown>;
+      const productData = providerPayload.data && typeof providerPayload.data === "object"
+        ? providerPayload.data as Record<string, unknown>
+        : providerPayload;
+      const readString = (...keys: string[]) => keys
+        .map((key) => productData[key])
+        .find((value): value is string => typeof value === "string" && value.trim().length > 0);
+      const readNumber = (...keys: string[]) => {
+        for (const key of keys) {
+          const value = productData[key];
+          if (typeof value === "number" && Number.isFinite(value)) return value;
+          if (typeof value === "string") {
+            const parsed = Number(value.replace(/[^0-9.-]/g, ""));
+            if (Number.isFinite(parsed)) return parsed;
+          }
+        }
+        return undefined;
       };
-      const currentRank = Number(providerData.currentRank ?? providerData.rank);
-      const previousRank = Number(providerData.previousRank ?? currentRank + 3);
-      if (!providerData.productTitle && !providerData.title || !Number.isFinite(currentRank)) {
+      const bestsellerRanks = productData.product_bestseller_rank;
+      const firstBestsellerRank = Array.isArray(bestsellerRanks)
+        ? bestsellerRanks.find((entry): entry is Record<string, unknown> => Boolean(entry && typeof entry === "object"))
+        : bestsellerRanks && typeof bestsellerRanks === "object"
+          ? bestsellerRanks as Record<string, unknown>
+          : undefined;
+      const bestsellerRank = firstBestsellerRank && typeof firstBestsellerRank === "object"
+        ? (() => {
+            const value = firstBestsellerRank.rank;
+            if (typeof value === "number" && Number.isFinite(value)) return value;
+            if (typeof value === "string") {
+              const parsed = Number(value.replace(/[^0-9.-]/g, ""));
+              if (Number.isFinite(parsed)) return parsed;
+            }
+            return undefined;
+          })()
+        : undefined;
+      const productTitle = readString("productTitle", "product_title", "title");
+      const currentRank = readNumber("currentRank", "current_rank", "rank", "sales_rank") ?? bestsellerRank ?? null;
+      if (!productTitle) {
         res.status(502).json({ error: "The live provider returned an unsupported response format." });
         return;
       }
+      const previousRank = readNumber("previousRank", "previous_rank") ?? (currentRank === null ? null : currentRank);
       res.json(resultFromProduct(input, {
-        productTitle: providerData.productTitle ?? providerData.title ?? "Amazon product",
-        brand: providerData.brand ?? "Unknown brand",
-        imageUrl: providerData.imageUrl ?? providerData.image ?? null,
+        productTitle,
+        brand: readString("brand", "product_brand") ?? "Unknown brand",
+        imageUrl: readString("imageUrl", "product_photo", "product_image", "image") ?? null,
         currentRank,
         previousRank,
-        rating: Number(providerData.rating ?? 0),
-        reviewCount: Number(providerData.reviewCount ?? 0),
-        price: Number(providerData.price ?? 0),
+        rating: readNumber("rating", "product_star_rating") ?? 0,
+        reviewCount: readNumber("reviewCount", "product_num_reviews", "product_num_ratings") ?? 0,
+        price: readNumber("price", "product_price") ?? 0,
       }, "live"));
       return;
     } catch (error) {

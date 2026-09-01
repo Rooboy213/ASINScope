@@ -301,9 +301,12 @@ export interface RankTrackerResult {
   brand: string;
   /** @nullable */
   imageUrl?: string | null;
-  currentRank: number;
-  previousRank: number;
-  rankChange: number;
+  /** @nullable */
+  currentRank: number | null;
+  /** @nullable */
+  previousRank: number | null;
+  /** @nullable */
+  rankChange: number | null;
   rating: number;
   reviewCount: number;
   price: number;
